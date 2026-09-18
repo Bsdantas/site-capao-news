@@ -1,0 +1,60 @@
+<?php
+/**
+ * The header for the Capão News theme.
+ *
+ * @package Capao_News
+ */
+?><!doctype html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php wp_head(); ?>
+</head>
+<body <?php body_class('capao-site'); ?>>
+<?php wp_body_open(); ?>
+<a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-[#6865a8] focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-white" href="#conteudo">
+    <?php esc_html_e('Pular para o conteúdo', 'capao-news'); ?>
+</a>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="header-branding">
+        <?php if (has_custom_logo()) : ?>
+            <div class="header-logo-wrap">
+                <?php the_custom_logo(); ?>
+            </div>
+        <?php elseif (has_custom_header() && get_header_image()) : ?>
+            <a href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php esc_attr_e('Capão News - início', 'capao-news'); ?>">
+                <img class="h-full w-full object-cover object-center" src="<?php echo esc_url(get_header_image()); ?>" alt="<?php bloginfo('name'); ?>">
+            </a>
+        <?php else : ?>
+            <a class="brand-link" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php esc_attr_e('Capão News - início', 'capao-news'); ?>">
+                <span class="brand-wordmark" aria-label="Capão News">
+                    <span class="brand-capao">CAPÃO</span>
+                    <span class="brand-news">news</span>
+                </span>
+                <span class="brand-tagline"><?php esc_html_e('Notícia feita na quebrada', 'capao-news'); ?></span>
+            </a>
+        <?php endif; ?>
+        </div>
+        <div class="header-actions"><a href="#apoie"><?php esc_html_e('Apoie o jornalismo local', 'capao-news'); ?></a></div>
+    </div>
+
+    <button class="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu-panel">
+        <span class="screen-reader-text"><?php esc_html_e('Abrir menu', 'capao-news'); ?></span><span class="mobile-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+    <nav id="site-menu-panel" class="site-navigation" aria-label="<?php esc_attr_e('Navegação principal', 'capao-news'); ?>">
+        <?php
+        wp_nav_menu([
+            'theme_location' => 'primary',
+            'container'      => false,
+            'fallback_cb'    => 'capao_news_menu_fallback',
+            'menu_class'     => 'site-menu',
+            'depth'          => 2,
+        ]);
+        ?>
+    </nav>
+</header>
+
+<main id="conteudo" class="site-main">

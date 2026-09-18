@@ -1,0 +1,224 @@
+<?php
+/**
+ * Capão News theme functions.
+ */
+
+declare(strict_types=1);
+
+function capao_news_setup(): void
+{
+    load_theme_textdomain('capao-news', get_template_directory() . '/languages');
+
+    add_theme_support('title-tag');
+    add_theme_support('post-thumbnails');
+    add_theme_support('html5', ['search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script']);
+    add_theme_support('custom-logo', [
+        'height'      => 150,
+        'width'       => 1440,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ]);
+    add_theme_support('custom-header', [
+        'width'       => 1440,
+        'height'      => 150,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ]);
+
+    add_image_size('capao-ad-banner', 980, 140, true);
+    add_image_size('capao-ad-sidebar', 300, 250, true);
+
+    register_nav_menus([
+        'primary' => __('Navegação principal', 'capao-news'),
+        'footer'  => __('Navegação do rodapé', 'capao-news'),
+    ]);
+}
+add_action('after_setup_theme', 'capao_news_setup');
+
+function capao_news_enqueue_assets(): void
+{
+    $theme_version = wp_get_theme()->get('Version');
+    $style_path = get_template_directory() . '/style.css';
+    $tailwind_path = get_template_directory() . '/assets/css/tailwind.css';
+
+    wp_enqueue_style(
+        'capao-news-google-fonts',
+        'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap',
+        [],
+        null
+    );
+
+    wp_enqueue_style(
+        'capao-news-style',
+        get_stylesheet_uri(),
+        [],
+        file_exists($style_path) ? (string) filemtime($style_path) : $theme_version
+    );
+
+    if (file_exists($tailwind_path)) {
+        wp_enqueue_style(
+            'capao-news-tailwind',
+            get_template_directory_uri() . '/assets/css/tailwind.css',
+            ['capao-news-style'],
+            (string) filemtime($tailwind_path)
+        );
+    }
+
+    $script_path = get_template_directory() . '/assets/js/theme.js';
+    if (file_exists($script_path)) {
+        wp_enqueue_script('capao-news-theme', get_template_directory_uri() . '/assets/js/theme.js', [], (string) filemtime($script_path), true);
+    }
+}
+add_action('wp_enqueue_scripts', 'capao_news_enqueue_assets');
+
+function capao_news_register_content_types(): void
+{
+    register_post_type('anuncio', [
+        'labels' => [
+            'name' => __('Anúncios', 'capao-news'),
+            'singular_name' => __('Anúncio', 'capao-news'),
+            'add_new_item' => __('Adicionar novo anúncio', 'capao-news'),
+            'edit_item' => __('Editar anúncio', 'capao-news'),
+        ],
+        'public' => true,
+        'show_ui' => true,
+        'menu_icon' => 'dashicons-megaphone',
+        'supports' => ['title', 'thumbnail', 'editor'],
+        'has_archive' => false,
+        'rewrite' => ['slug' => 'anuncios'],
+        'show_in_rest' => true,
+    ]);
+
+    register_post_type('parceiro', [
+        'labels' => [
+            'name' => __('Parceiros', 'capao-news'),
+            'singular_name' => __('Parceiro', 'capao-news'),
+            'add_new_item' => __('Adicionar novo parceiro', 'capao-news'),
+            'edit_item' => __('Editar parceiro', 'capao-news'),
+        ],
+        'public' => true,
+        'show_ui' => true,
+        'menu_icon' => 'dashicons-groups',
+        'supports' => ['title', 'thumbnail', 'editor'],
+        'has_archive' => false,
+        'rewrite' => ['slug' => 'parceiros'],
+        'show_in_rest' => true,
+    ]);
+}
+add_action('init', 'capao_news_register_content_types');
+
+function capao_news_register_promo_meta_boxes(): void
+{
+    add_meta_box('capao_news_promo_details', __('Detalhes do item', 'capao-news'), 'capao_news_render_promo_meta_box', ['anuncio', 'parceiro'], 'normal', 'default');
+}
+add_action('add_meta_boxes', 'capao_news_register_promo_meta_boxes');
+
+function capao_news_render_promo_meta_box($post): void
+{
+    wp_nonce_field('capao_news_save_promo_fields', 'capao_news_promo_nonce');
+
+    $link = get_post_meta($post->ID, 'capao_news_link', true);
+    $status = get_post_meta($post->ID, 'capao_news_status', true);
+    ?>
+    <p>
+        <label for="capao_news_link"><strong><?php esc_html_e('Link do item', 'capao-news'); ?></strong></label><br>
+        <input type="url" id="capao_news_link" name="capao_news_link" value="<?php echo esc_attr($link ?: ''); ?>" class="widefat" placeholder="https://exemplo.com">
+    </p>
+    <p>
+        <label for="capao_news_status">
+            <input type="checkbox" id="capao_news_status" name="capao_news_status" value="1" <?php checked((string) $status, '1'); ?>>
+            <?php esc_html_e('Ativar este item no site', 'capao-news'); ?>
+        </label>
+    </p>
+    <?php
+}
+
+function capao_news_save_promo_meta(int $post_id): void
+{
+    if (!isset($_POST['capao_news_promo_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['capao_news_promo_nonce'])), 'capao_news_save_promo_fields')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    $link = isset($_POST['capao_news_link']) ? esc_url_raw(wp_unslash($_POST['capao_news_link'])) : '';
+    $status = isset($_POST['capao_news_status']) ? '1' : '0';
+
+    update_post_meta($post_id, 'capao_news_link', $link);
+    update_post_meta($post_id, 'capao_news_status', $status);
+}
+add_action('save_post', 'capao_news_save_promo_meta');
+
+function capao_news_reading_time(): string
+{
+    $content = get_the_content();
+    $word_count = str_word_count(wp_strip_all_tags($content));
+    $minutes = max(1, (int) ceil($word_count / 180));
+
+    return sprintf('%d min de leitura', $minutes);
+}
+
+function capao_news_menu_fallback(): void
+{
+    $categories = [
+        'Início'             => home_url('/'),
+        'Da Ponte pra Cá'    => 'da-ponte-pra-ca',
+        'Feito no Capão'     => 'feito-no-capao',
+        'Bora Lá?'           => 'bora-la',
+        'Capão que eu quero' => 'capao-que-eu-quero',
+        'Gente Nossa'        => 'gente-nossa',
+        'Bairros'            => home_url('/bairros/'),
+    ];
+
+    echo '<ul class="flex flex-wrap items-center justify-center gap-2 lg:gap-3">';
+    foreach ($categories as $label => $target) {
+        $category = is_string($target) ? get_category_by_slug($target) : null;
+        $url = $category ? get_category_link($category->term_id) : $target;
+
+        printf(
+            '<li><a class="whitespace-nowrap rounded-full px-4 py-2 transition hover:bg-[#6865a8]/10 hover:text-[#4a154b]" href="%s">%s</a></li>',
+            esc_url($url),
+            esc_html($label)
+        );
+    }
+    echo '</ul>';
+}
+
+function capao_news_create_static_pages(): void
+{
+    $pages = [
+        'quem-somos' => [
+            'title'   => 'Quem Somos',
+            'content' => '<p>O Capão News nasceu para dar voz ao bairro e para contar a história da região com jornalismo vivo, atento ao cotidiano, às pessoas e às demandas reais da comunidade.</p><p>Somos um veículo de comunicação comunitária que coloca a vida local no centro da pauta: mobilidade, infraestrutura, cultura, empreendedorismo, educação, esporte, cidadania e as histórias que fazem o Capão Redondo e seus bairros ganharem visibilidade.</p><p>Nosso compromisso é unir informação, denúncia construtiva, memória e protagonismo da população, trazendo uma cobertura que fala de perto com quem vive, trabalha e transforma a região todos os dias.</p>',
+        ],
+        'nossa-equipe' => [
+            'title'   => 'Nossa Equipe',
+            'content' => '<p>O Capão News é feito por uma equipe apaixonada por jornalismo local, por histórias de bairro e por fortalecer a comunicação da comunidade.</p><p>Trabalhamos com produção editorial, apuração, redação, cobertura de eventos, entrevistas e acompanhamento do que acontece na região. Nossa rotina mistura presença no território, escuta com a comunidade e cuidado para transformar fatos em informação útil, honesta e acessível.</p><p>Acreditamos que a região precisa de veículos que olhem de perto para as reais necessidades da população, valorizando quem vive, produz e constrói o Capão todos os dias.</p>',
+        ],
+    ];
+
+    foreach ($pages as $slug => $page_data) {
+        $existing_page = get_page_by_path($slug, OBJECT, 'page');
+
+        if ($existing_page) {
+            continue;
+        }
+
+        wp_insert_post([
+            'post_type'    => 'page',
+            'post_status'  => 'publish',
+            'post_title'   => $page_data['title'],
+            'post_name'    => $slug,
+            'post_content' => $page_data['content'],
+            'post_author'  => get_current_user_id() ?: 1,
+        ]);
+    }
+}
+add_action('after_switch_theme', 'capao_news_create_static_pages');
+add_action('init', 'capao_news_create_static_pages');

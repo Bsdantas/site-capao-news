@@ -1,353 +1,153 @@
-# Capão News - Documentação do WordPress
+# Capão News
 
-Este documento explica como o cliente vai inserir anúncios e parceiros no site usando plugins no WordPress, sem precisar mexer em código.
+Tema WordPress editorial criado para um portal de notícias comunitário do Capão Redondo e da Zona Sul de São Paulo.
 
----
+O projeto foi desenvolvido para a página [@capaonews](https://www.instagram.com/capaonews/) e tem como proposta transformar o conteúdo do Capão News em uma experiência digital organizada, responsiva e fácil de administrar pelo painel do WordPress.
 
-## 1. Objetivo
+> Projeto desenvolvido como parte do Projeto de Extensão IV da [Faculdade Descomplica](https://descomplica.com.br/), no curso de Análise e Desenvolvimento de Sistemas.
 
-O site precisa ter duas áreas de conteúdo administráveis pelo painel do WordPress:
+## Sobre o projeto
 
-- Anúncios
-- Parceiros
+O Capão News é um tema personalizado para publicação de notícias, reportagens e histórias da comunidade. A solução foi pensada para aproximar o jornalismo local do público, valorizar as pautas do território e oferecer uma base profissional para crescimento editorial.
 
-Esses itens serão exibidos automaticamente no layout do site, como na home e no rodapé.
+Além da apresentação das notícias, o tema possui uma estrutura de gestão para anúncios e parceiros, permitindo que o cliente atualize informações recorrentes sem precisar alterar o código-fonte.
 
-A ideia é que o cliente consiga:
+## Funcionalidades implementadas
 
-- criar novos anúncios
-- criar novos parceiros
-- inserir imagem ou logo
-- adicionar link para o site ou página
-- publicar e retirar itens sem depender de desenvolvedor
+### Experiência editorial
 
----
+- Homepage com destaque principal em formato de carrossel.
+- Área de notícias recentes e seção de notícias mais lidas.
+- Organização por categorias editoriais.
+- Exibição de data da publicação e tempo estimado de leitura.
+- Templates para página inicial, páginas internas e posts individuais.
+- Fallback de navegação com categorias predefinidas quando não há menu configurado.
 
-## 2. Plugins que serão usados
+### Gestão de conteúdo no WordPress
 
-### 2.1 CPT UI
+- Suporte a posts, páginas, categorias e imagens destacadas.
+- Suporte a logo personalizada e imagem de cabeçalho.
+- Menus independentes para navegação principal e rodapé.
+- Criação automática das páginas institucionais “Quem Somos” e “Nossa Equipe” na ativação do tema.
+- Tipos de conteúdo personalizados para **Anúncios** e **Parceiros**.
+- Campos administrativos para link externo e status de publicação.
+- Exibição automática de anúncios e parceiros ativos na homepage.
+- Espaços preparados para publicidade e apoio ao jornalismo local.
 
-Plugin usado para criar tipos de conteúdo personalizados no WordPress.
+### Interface e acessibilidade
 
-Funciona assim:
+- Layout responsivo para desktop, tablet e celular.
+- Menu mobile com controle por JavaScript.
+- Link para pular diretamente ao conteúdo principal.
+- Uso de HTML semântico, textos alternativos e atributos `aria` nos componentes interativos.
+- Feedback visual em links, botões, cards e navegação.
+- Carregamento versionado de estilos e scripts para reduzir problemas de cache.
 
-- cria menus novos no painel administrativo
-- permite criar itens como "Anúncios" e "Parceiros"
-- deixa o cliente organizar o conteúdo do site com mais clareza
+## Tecnologias utilizadas
 
-### 2.2 Advanced Custom Fields (ACF)
+- **PHP** para os templates e integrações com a API do WordPress.
+- **WordPress** como CMS e plataforma de publicação.
+- **CSS** para identidade visual, responsividade e componentes do tema.
+- **Tailwind CSS** para estilos utilitários compilados.
+- **JavaScript** para menu mobile e carrossel de destaques.
+- **Git e GitHub** para versionamento e colaboração.
 
-Plugin usado para criar campos personalizados em cada item.
+## Requisitos
 
-Com ele, o cliente consegue preencher dados como:
+- WordPress 6.0 ou superior.
+- PHP 7.4 ou superior.
+- Servidor com suporte a temas WordPress.
+- Extensão PHP `mbstring` recomendada para ambientes em português.
 
-- nome da marca
-- imagem/logo
-- link
-- tipo de anúncio
-- status ativo/inativo
-- data final
+## Instalação
 
----
+1. Baixe ou clone este repositório dentro da pasta de temas do WordPress:
 
-## 3. O que precisa ser configurado no WordPress
+   ```text
+   wp-content/themes/site-capao-news
+   ```
 
-### 3.1 Instalar os plugins
+2. No painel administrativo, acesse **Aparência > Temas**.
+3. Ative o tema **Capão News**.
+4. Acesse **Aparência > Personalizar** para configurar logo, cabeçalho e identidade do site.
+5. Em **Aparência > Menus**, configure os menus principal e do rodapé.
+6. Cadastre posts, categorias e imagens destacadas para alimentar a homepage.
+7. Cadastre anúncios e parceiros pelo painel do WordPress, informe o link e marque a opção **Ativar este item no site**.
 
-No painel do WordPress:
+### Instalação via Git
 
-1. Vá em Plugins
-2. Clique em Adicionar novo
-3. Procure por: "Custom Post Type UI"
-4. Instale e ative
-5. Procure por: "Advanced Custom Fields"
-6. Instale e ative
+```bash
+cd wp-content/themes
+git clone https://github.com/Bsdantas/site-capao-news.git site-capao-news
+```
 
----
+Depois, ative o tema pelo painel do WordPress.
 
-### 3.2 Criar o tipo de conteúdo "Anúncio"
+## Administração de anúncios e parceiros
 
-No painel do WordPress:
+O tema registra dois tipos de conteúdo no WordPress:
 
-1. Vá em CPT UI
-2. Clique em Add/Edit Post Types
-3. Clique em Add New
-4. Preencha os campos:
+### Anúncios
 
-- Post Type Slug: anuncio
-- Plural Label: Anúncios
-- Singular Label: Anúncio
+Indicados para publicidade, campanhas, ofertas e espaços comerciais. Cada item pode ter título, imagem destacada, conteúdo, link externo e status de exibição.
 
-5. Clique em Add Post Type
+### Parceiros
 
-Isso cria um novo item no menu lateral do WordPress chamado "Anúncios".
+Indicados para empresas, instituições e apoiadores do projeto. Cada item pode ter nome, logo, conteúdo, link externo e status de exibição.
 
----
+Para exibir um item no site, ele precisa estar publicado e com **Ativar este item no site** selecionado. O link é sanitizado e os links externos são abertos com proteção `noopener noreferrer`.
 
-### 3.3 Criar o tipo de conteúdo "Parceiro"
+## Estrutura do projeto
 
-Faça o mesmo processo:
+```text
+site-capao-news/
+├── assets/
+│   ├── css/tailwind.css       # CSS compilado
+│   ├── images/                # Logos e imagens do tema
+│   └── js/theme.js            # Interações da interface
+├── footer.php                 # Rodapé e área de apoio
+├── functions.php              # Configuração e funcionalidades WordPress
+├── header.php                 # Cabeçalho e navegação
+├── index.php                  # Homepage e listagens
+├── page.php                   # Template de páginas
+├── single.php                 # Template de posts
+├── style.css                  # Metadados do tema e estilos principais
+├── tailwind.config.js         # Configuração do Tailwind CSS
+└── tailwind.input.css         # Entrada do Tailwind CSS
+```
 
-- Post Type Slug: parceiro
-- Plural Label: Parceiros
-- Singular Label: Parceiro
+## Desenvolvimento local
 
-Clique em Add Post Type.
+O projeto é um tema WordPress e precisa ser executado dentro de uma instalação WordPress local, como Local, XAMPP, Docker ou ambiente equivalente.
 
-Isso cria um novo menu chamado "Parceiros".
+Para trabalhar nos estilos do Tailwind, instale as dependências do projeto e execute o processo de compilação configurado no ambiente de desenvolvimento. O arquivo `assets/css/tailwind.css` é o CSS consumido pelo tema em produção.
 
----
+Antes de publicar uma alteração, recomenda-se validar:
 
-### 3.4 Criar os campos personalizados
+- ativação do tema sem erros no painel;
+- navegação em desktop e dispositivos móveis;
+- publicação de posts com e sem imagem destacada;
+- funcionamento dos menus;
+- cadastro e ativação de anúncios e parceiros;
+- links externos e páginas institucionais;
+- ausência de avisos de PHP no log do WordPress.
 
-Agora vamos configurar os campos que serão usados dentro de cada item.
+## Qualidade e versionamento
 
-#### Para o tipo "Anúncio"
+O repositório utiliza GitHub Actions para executar verificações automatizadas de PHP a cada alteração. O `.gitignore` evita o versionamento de dependências, arquivos de ambiente, logs e configurações locais.
 
-No painel do WordPress:
+## Contexto acadêmico
 
-1. Vá em ACF
-2. Clique em Grupos de campos
-3. Clique em Adicionar novo
-4. Nomeie o grupo: "Anúncio"
-5. Adicione os campos abaixo:
+Este trabalho faz parte do **Projeto de Extensão IV** da Faculdade Descomplica, no curso de **Análise e Desenvolvimento de Sistemas**. O projeto aplica conhecimentos de desenvolvimento web, CMS, PHP, acessibilidade, arquitetura de temas WordPress e organização de conteúdo digital em uma demanda real de comunicação comunitária.
 
-Campo 1: Nome da marca
-- Tipo: Texto
-- Nome do campo: nome_da_marca
+## Créditos
 
-Campo 2: Link do anúncio
-- Tipo: URL
-- Nome do campo: link_do_anuncio
+- **Projeto:** Capão News
+- **Instagram:** [@capaonews](https://www.instagram.com/capaonews/)
+- **Instituição:** Faculdade Descomplica
+- **Curso:** Análise e Desenvolvimento de Sistemas
+- **Repositório:** [Bsdantas/site-capao-news](https://github.com/Bsdantas/site-capao-news)
 
-Campo 3: Imagem do anúncio
-- Tipo: Imagem
-- Nome do campo: imagem_do_anuncio
+## Licença
 
-Campo 4: Tipo de anúncio
-- Tipo: Seleção
-- Nome do campo: tipo_de_anuncio
-- Opções:
-  - Patrocinador
-  - Anúncio
-  - Parceiro
-
-Campo 5: Ativo
-- Tipo: Caixa de seleção
-- Nome do campo: ativo
-
-Campo 6: Data final
-- Tipo: Data
-- Nome do campo: data_final
-
-Depois configure a regra:
-
-- Mostrar esse grupo quando o tipo de post for igual a Anúncio
-
-Salve o grupo.
-
----
-
-#### Para o tipo "Parceiro"
-
-1. Vá em ACF
-2. Clique em Grupos de campos
-3. Clique em Adicionar novo
-4. Nomeie o grupo: "Parceiro"
-5. Adicione os seguintes campos:
-
-Campo 1: Nome da empresa
-- Tipo: Texto
-- Nome do campo: nome_da_empresa
-
-Campo 2: Link do parceiro
-- Tipo: URL
-- Nome do campo: link_do_parceiro
-
-Campo 3: Logo do parceiro
-- Tipo: Imagem
-- Nome do campo: logo_do_parceiro
-
-Campo 4: Ativo
-- Tipo: Caixa de seleção
-- Nome do campo: ativo
-
-Configure a regra:
-
-- Mostrar esse grupo quando o tipo de post for igual a Parceiro
-
-Salve o grupo.
-
----
-
-## 4. Como o cliente vai usar isso no painel
-
-### 4.1 Inserir um anúncio
-
-No painel do WordPress:
-
-1. Vá em Anúncios
-2. Clique em Adicionar novo
-3. Preencha:
-   - título do anúncio
-   - nome da marca
-   - link
-   - imagem
-   - tipo
-   - status ativo
-4. Clique em Publicar
-
-Isso faz o anúncio aparecer no local do site em que ele foi programado para aparecer.
-
----
-
-### 4.2 Inserir um parceiro
-
-No painel do WordPress:
-
-1. Vá em Parceiros
-2. Clique em Adicionar novo
-3. Preencha:
-   - nome da empresa
-   - logo
-   - link
-   - status ativo
-4. Clique em Publicar
-
-O parceiro aparece automaticamente no rodapé ou em outra área do layout, conforme a programação do tema.
-
----
-
-## 5. Como o site exibe isso
-
-Depois que o cliente publica os itens, o tema precisa buscar esses conteúdos e exibir na página.
-
-O ideal é que o site leia automaticamente:
-
-- anúncios ativos
-- parceiros ativos
-- imagem do anúncio/parceiro
-- link da empresa
-- tipo de mídia
-
-Essa exibição pode acontecer em:
-
-- home
-- barra lateral
-- rodapé
-- bloco de apoiadores
-
----
-
-## 6. Regras de uso recomendadas
-
-### 6.1 Sempre manter os itens ativos
-
-Para que apareçam no site, o campo "Ativo" deve estar marcado.
-
-Se o cliente desmarcar esse campo, o item pode deixar de aparecer.
-
-### 6.2 Usar imagens com boa qualidade
-
-Para anúncios e parceiros, é importante usar arquivos nítidos e com boa proporção.
-
-Recomendado:
-
-- imagens em alta resolução
-- sem distorção
-- sem arquivos muito pesados
-
-### 6.3 Usar links corretos
-
-O campo de link deve apontar sempre para a página correta, por exemplo:
-
-- site da empresa
-- página de oferta
-- página de campanha
-- contato
-
----
-
-## 7. Diferença entre anúncio e parceiro
-
-### Anúncio
-
-- usado para publicidade
-- pode ter campanha, oferta ou destaque
-- o conteúdo costuma ser mais comercial
-
-### Parceiro
-
-- usado para empresas ou instituições que apoiam o jornal
-- geralmente tem logo + link
-- visual mais institucional e discreto
-
----
-
-## 8. Estrutura recomendada para o cliente
-
-Para facilitar a gestão, o ideal é manter a seguinte organização:
-
-- Anúncios
-- Parceiros
-- Apoiar o jornal
-
-Assim, o cliente entende que:
-
-- "Anúncios" = publicidade
-- "Parceiros" = apoio institucional
-- "Apoiar" = canal para quem quiser apoiar financeiramente ou por contato
-
----
-
-## 9. Checklist final para o cliente
-
-Antes de publicar, confirme:
-
-- [ ] os plugins foram instalados
-- [ ] os tipos de conteúdo foram criados
-- [ ] os campos personalizados foram configurados
-- [ ] o cliente sabe onde encontrar "Anúncios" e "Parceiros"
-- [ ] imagens estão corretas
-- [ ] links estão funcionando
-- [ ] o item está marcado como ativo
-- [ ] a publicação foi salva
-
----
-
-## 10. Observação importante
-
-A área de anúncios e parceiros só funciona corretamente quando:
-
-- os tipos de conteúdo existem no WordPress
-- os campos personalizados estão configurados
-- o tema do site está lendo esses dados e exibindo no layout
-
-Se os itens estiverem criados no painel, mas não aparecerem no site, normalmente o problema está na parte do tema que precisa renderizar esses dados.
-
----
-
-## 11. Resumo simples
-
-O cliente vai:
-
-- instalar CPT UI e ACF
-- criar os tipos "Anúncio" e "Parceiro"
-- preencher imagem, link e categoria
-- publicar no painel
-- visualizar os blocos automaticamente na página
-
-Isso torna o site fácil de manter e evita que o cliente precise depender de código para cada alteração.
-
----
-
-## 12. Próximo passo
-
-Depois desta configuração, o próximo passo é integrar esses dados ao tema para que eles apareçam automaticamente na home e no rodapé.
-
-Se quiser, posso preparar também a segunda parte da documentação:
-
-- código PHP do tema para mostrar os anúncios e parceiros
-- exemplo de como o cliente vai usar cada tipo no painel
-- instruções de manutenção mensal
-
+Este projeto utiliza a [GNU General Public License v2 ou posterior](https://www.gnu.org/licenses/gpl-2.0.html), conforme definido nos metadados do tema WordPress.
